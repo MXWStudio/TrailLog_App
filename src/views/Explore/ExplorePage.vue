@@ -42,14 +42,22 @@ const filteredTrails = computed(() => {
 <style scoped>
 .search-input {
   width: 100%;
-  padding: 0.7rem 1rem;
+  padding: 12px 20px;
   margin-bottom: 1.2rem;
-  border: 1px solid #ccc;
-  border-radius: 999px;
-  font-size: 1rem;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 20px;
+  font-size: 14px;
   outline: none;
   box-sizing: border-box;
+  transition: all 0.3s ease;
 }
+
+.search-input:focus {
+  background: #f0f0f0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
 .explore-page {
   padding: 1rem;
   padding-bottom: 5rem;
@@ -60,25 +68,35 @@ const filteredTrails = computed(() => {
   gap: 0.75rem;
   margin-bottom: 1.5rem;
   overflow-x: auto;
-  padding-bottom: 0.5rem;
+  padding: 4px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+}
+
+.filters::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
 }
 
 .filters button {
-  background-color: #2a2a2a;
-  color: #e0e0e0;
+  background-color: #f5f5f5;
+  color: #666;
   border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 999px;
-  font-size: 0.9rem;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
   white-space: nowrap;
+  font-weight: 500;
+}
+
+.filters button:hover {
+  background-color: #e8e8e8;
 }
 
 .filters button.active {
-  background-color: #4CAF50;
+  background-color: #000;
   color: white;
-  font-weight: bold;
 }
 
 .trail-list {

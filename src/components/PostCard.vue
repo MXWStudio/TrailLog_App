@@ -3,27 +3,29 @@
     <div class="post-header">
       <img :src="post.author.avatar" alt="Avatar" class="avatar">
       <div class="author-info">
-        <span class="author-name">{{ post.author.name }}</span>
-        <span class="post-date">{{ post.date }}</span>
-        <button class="follow-btn">关注</button>
+        <div class="name-and-button">
+          <span class="author-name">{{ post.author.name }}</span>
+          <button class="follow-btn">关注</button>
+        </div>
       </div>
-      <i class="icon-more">...</i>
+      <IconMaterialSymbolsMoreVert class="icon-more" />
     </div>
     <div class="post-image-container">
       <img :src="post.imageUrl" alt="Post Image" class="post-image">
-      <div v-if="post.recap" class="recap-tag">▶️ Recap</div>
       <div class="map-thumbnail">
-        <img src="path/to/small_map_thumbnail.png" alt="Map Thumbnail">
+        <img :src="smallMapThumbnail" alt="Map Thumbnail">
       </div>
     </div>
     <div class="post-details">
       <h3>{{ post.title }}</h3>
       <p class="post-location">{{ post.location }}</p>
-      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
+import smallMapThumbnail from '@/assets/qingcheng_mountain.jpg';
+import IconMaterialSymbolsMoreVert from '~icons/material-symbols/more-vert';
 const props = defineProps({
   post: Object
 });
@@ -49,6 +51,9 @@ const props = defineProps({
   height: 40px;
   border-radius: 50%;
   margin-right: 10px;
+  background-color: #f5f5f5;
+  object-fit: cover;
+  border: 1px solid #eee;
 }
 
 .post-header .author-info {
@@ -60,18 +65,33 @@ const props = defineProps({
   display: block;
 }
 
-.post-header .post-date {
-  font-size: 12px;
-  color: #888;
+.name-and-button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .post-header .follow-btn {
-  background: none;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 5px 10px;
-  font-size: 12px;
+  background: #1890ff;
+  border: none;
+  border-radius: 16px;
+  padding: 4px 16px;
+  font-size: 13px;
   cursor: pointer;
+  color: white;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.post-header .follow-btn:hover {
+  background: #40a9ff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(24,144,255,0.2);
+}
+
+.post-header .follow-btn:active {
+  transform: translateY(0);
+  background: #096dd9;
 }
 
 .post-image-container {
@@ -88,17 +108,6 @@ const props = defineProps({
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-.recap-tag {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: rgba(0,0,0,0.6);
-  color: #fff;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 12px;
 }
 
 .map-thumbnail {

@@ -4,7 +4,11 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- 添加 CSP 配置以允许加载外部资源 -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' https://webapi.amap.com https://restapi.amap.com https://vdata.amap.com; style-src 'self' 'unsafe-inline' https://webapi.amap.com https://cdnjs.cloudflare.com; img-src 'self' data: https://*.amap.com https://webapi.amap.com https://restapi.amap.com https://vdata.amap.com https://api.dicebear.com https://source.unsplash.com https://images.unsplash.com https://i.pinimg.com; font-src 'self' https://cdnjs.cloudflare.com">
     <title>Trail Log</title>
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   </head>
   <body>
     <div id="app"></div>
