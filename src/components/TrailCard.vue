@@ -7,6 +7,7 @@
         :alt="trail.name" 
         class="card-image" 
         @error="onImageError"
+        @load="onImageLoad"
       />
       <!-- 收藏按钮 -->
       <button class="bookmark-btn">
@@ -14,7 +15,7 @@
       </button>
       <!-- 小地图 -->
       <div class="map-preview">
-        <img :src="trail.mapPreviewUrl" alt="Trail map" class="map-image" />
+        <img :src="effectiveMapPreviewUrl" alt="Trail map" class="map-image" />
       </div>
       <!-- 图片指示器 -->
       <div class="image-indicators">
@@ -60,6 +61,11 @@ import type { Trail } from '../data/trails';
 import { Bookmark, DownloadCloud, Star } from 'lucide-vue-next';
 import { Geolocation } from '@capacitor/geolocation';
 
+// 导入本地图片
+import qingchengMountain from '@/assets/qingcheng_mountain.jpg';
+import fushiMountain from '@/assets/fushi_mountain.jpg';
+import longjititian from '@/assets/longjititian.jpg';
+
 const props = defineProps<{
   trail: Trail;
 }>();
@@ -68,6 +74,13 @@ const mapContainer = ref<HTMLElement | null>(null);
 const trailImage = ref<HTMLImageElement | null>(null);
 const imageAspectRatio = ref(16/9); // 默认宽高比
 const imageLoaded = ref(false);
+
+// 本地图片映射
+const localImages: Record<string, string> = {
+  '/src/assets/qingcheng_mountain.jpg': qingchengMountain,
+  '/src/assets/fushi_mountain.jpg': fushiMountain,
+  '/src/assets/longjititian.jpg': longjititian,
+};
 
 // 计算卡片样式
 const cardStyle = computed(() => ({
@@ -109,9 +122,17 @@ const placeholderBaseUrl = 'https://source.unsplash.com/featured/';
 
 // 计算属性，用于主图片
 const effectiveTrailImageUrl = computed(() => {
-  if (props.trail.imageUrl && props.trail.imageUrl.trim() !== '') {
-    return props.trail.imageUrl;
+  if (props.trail.imageUrl) {
+    // 检查是否是本地图片路径
+    if (localImages[props.trail.imageUrl]) {
+      return localImages[props.trail.imageUrl];
+    }
+    // 如果是外部URL，直接使用
+    if (props.trail.imageUrl.startsWith('http')) {
+      return props.trail.imageUrl;
+    }
   }
+  
   // 根据路线名称和位置生成相关的图片
   const searchQuery = encodeURIComponent(`${props.trail.name},${props.trail.location},hiking,trail`);
   return `${placeholderBaseUrl}375x200?${searchQuery}`;
@@ -119,9 +140,17 @@ const effectiveTrailImageUrl = computed(() => {
 
 // 计算属性，用于地图预览图片
 const effectiveMapPreviewUrl = computed(() => {
-  if (props.trail.mapPreviewUrl && props.trail.mapPreviewUrl.trim() !== '') {
-    return props.trail.mapPreviewUrl;
+  if (props.trail.mapPreviewUrl) {
+    // 检查是否是本地图片路径
+    if (localImages[props.trail.mapPreviewUrl]) {
+      return localImages[props.trail.mapPreviewUrl];
+    }
+    // 如果是外部URL，直接使用
+    if (props.trail.mapPreviewUrl.startsWith('http')) {
+      return props.trail.mapPreviewUrl;
+    }
   }
+  
   // 使用地图相关的占位图
   const searchQuery = encodeURIComponent(`${props.trail.location},map,terrain`);
   return `${placeholderBaseUrl}60x60?${searchQuery}`;
@@ -130,13 +159,13 @@ const effectiveMapPreviewUrl = computed(() => {
 // 图片加载错误时的处理函数
 const onImageError = (event: Event) => {
   const target = event.target as HTMLImageElement;
-  const isMapPreview = target.classList.contains('map-preview');
+  const isMapPreview = target.classList.contains('map-image');
   
   console.warn(`Image failed to load: ${target.src}`);
   
   // 设置备用图片
   if (isMapPreview) {
-    target.src = '@/assets/qingcheng_mountain.jpg';
+    target.src = qingchengMountain;
   } else {
     // 使用更通用的风景图作为备用
     target.src = `${placeholderBaseUrl}375x200?nature,landscape`;
