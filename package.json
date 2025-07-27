@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "type-check": "vue-tsc --noEmit",
-    "ios": "npm run build && npx cap sync && npx cap open ios"
+    "ios": "npm run build && npx cap sync && npx cap open ios",
+    "check-config": "node scripts/check-config.js",
+    "test-database": "node scripts/test-database.js"
   },
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",

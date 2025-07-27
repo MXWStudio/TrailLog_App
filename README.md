@@ -9,9 +9,10 @@
 - **技术栈**：
   - Vue 3 (Composition API)
   - Vue Router
-  - Pinia (计划中)
+  - Pinia (状态管理)
   - Tailwind CSS
-  - Mapbox GL JS (或高德/百度地图SDK)
+  - Supabase (数据库和认证) 🆕
+  - 高德地图 API (地图服务)
 
 ## 核心模块
 
@@ -90,34 +91,126 @@
 
 ## 安装和运行
 
-### 前置配置
+### 🚀 快速开始
 
-1. **高德地图API Key配置**
+**1. 克隆项目并安装依赖**
+```bash
+git clone <your-repo-url>
+cd TrailLog
+npm install
+```
+
+**2. 配置环境变量**
+在项目根目录创建 `.env.local` 文件：
+```bash
+VITE_SUPABASE_KEY=xx
+VITE_AMAP_API_KEY=xx
+VITE_APP_NAME=TrailLog
+VITE_APP_VERSION=1.0.0
+```
+
+**3. 验证配置并启动**
+```bash
+npm run check-config  # 验证配置
+npm run dev           # 启动开发服务器
+```
+
+### 详细配置说明
+
+#### 1. Supabase 数据库配置 🆕
+
+**重要：请先完成 Supabase 配置，这是应用运行的必要条件**
+
+1. **获取 Supabase 配置信息**
+   - 访问 [Supabase Dashboard](https://supabase.com/dashboard)
+   - 选择您的项目：`https://gaxjvkvudzrwyochicps.supabase.co`
+   - 进入 `Settings` → `API`
+   - 复制 `anon public key`
+
+2. **配置环境变量**
+   ```bash
+   # 在项目根目录创建 .env.local 文件
+   VITE_SUPABASE_KEY=your_supabase_anon_key_here
+   VITE_AMAP_API_KEY=your_amap_api_key_here
+   VITE_APP_NAME=TrailLog
+   VITE_APP_VERSION=1.0.0
+   ```
+
+3. **数据库表结构**
+   
+   应用使用以下主要数据表（请在 Supabase 中创建）：
+   
+   **users 表（用户信息）**：
+   ```sql
+   CREATE TABLE users (
+     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+     email VARCHAR NOT NULL UNIQUE,
+     username VARCHAR,
+     avatar_url VARCHAR,
+     created_at TIMESTAMP DEFAULT NOW(),
+     updated_at TIMESTAMP DEFAULT NOW()
+   );
+   ```
+   
+   **trails 表（徒步路线）**：
+   ```sql
+   CREATE TABLE trails (
+     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+     name VARCHAR NOT NULL,
+     description TEXT,
+     difficulty VARCHAR CHECK (difficulty IN ('easy', 'moderate', 'hard')),
+     distance DECIMAL NOT NULL,
+     elevation_gain INTEGER,
+     duration INTEGER,
+     created_at TIMESTAMP DEFAULT NOW(),
+     user_id UUID REFERENCES users(id)
+   );
+   ```
+
+4. **安全策略配置**
+   
+   在 Supabase 中启用行级安全 (RLS)：
+   ```sql
+   -- 启用 RLS
+   ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+   ALTER TABLE trails ENABLE ROW LEVEL SECURITY;
+   
+   -- 用户只能查看和编辑自己的数据
+   CREATE POLICY "Users can view own profile" ON users FOR SELECT USING (auth.uid() = id);
+   CREATE POLICY "Users can update own profile" ON users FOR UPDATE USING (auth.uid() = id);
+   
+   -- 路线数据的访问策略
+   CREATE POLICY "Anyone can view trails" ON trails FOR SELECT USING (true);
+   CREATE POLICY "Users can create trails" ON trails FOR INSERT WITH CHECK (auth.uid() = user_id);
+   CREATE POLICY "Users can update own trails" ON trails FOR UPDATE USING (auth.uid() = user_id);
+   ```
+
+#### 2. 高德地图API Key配置
+
+1. **获取高德地图API Key**
    - 前往 [高德开放平台](https://console.amap.com/) 注册并创建应用
    - 获取Web服务API Key
-   - 在项目根目录创建 `.env.local` 文件
-   - 添加以下配置：
-   ```bash
-   VITE_AMAP_API_KEY=your_amap_api_key_here
-   ```
-   **重要提示**：
-   - 确保您的API Key具有以下权限：
-     - Web服务API
-     - Web端(JS API)
-   - 在高德开放平台控制台中配置安全域名
-   - 开发环境可配置 `localhost`
-   - 不要将真实的API Key提交到代码仓库
+   - 在 `.env.local` 文件中添加：`VITE_AMAP_API_KEY=your_amap_api_key_here`
 
 2. **地图功能权限**
-   - Web端地图：申请Web端(JS API)类型的Key
-   - 移动端：需要额外配置iOS/Android端权限
-   - 定位服务：确保Key包含定位权限
+   - 确保API Key具有：Web服务API、Web端(JS API)权限
+   - 在控制台配置安全域名（开发环境可用 `localhost`）
 
 ### 运行命令
 
 ```bash
 # 安装依赖
 npm install
+
+# 配置环境变量（必须）
+# 在项目根目录创建 .env.local 文件，内容如下：
+#   VITE_SUPABASE_KEY=your_supabase_anon_key_here
+#   VITE_AMAP_API_KEY=your_amap_api_key_here
+#   VITE_APP_NAME=TrailLog
+#   VITE_APP_VERSION=1.0.0
+
+# 验证配置是否正确
+npm run check-config
 
 # 开发环境运行
 npm run dev
@@ -127,6 +220,104 @@ npm run build
 
 # iOS平台运行
 npm run ios
+```
+
+### Supabase 功能特性 🆕
+
+#### 已实现功能
+
+✅ **完整认证系统**
+- 用户注册、登录、登出
+- 邮箱验证和密码重置
+- 认证状态持久化和自动刷新
+- 实时认证状态监听
+
+✅ **数据库操作**
+- 类型安全的数据库操作
+- 徒步路线的增删改查
+- 用户档案管理
+- 支持复杂查询和关联
+
+✅ **文件存储**
+- 图片和文件上传到 Supabase Storage
+- 公共URL获取和管理
+- 文件删除和批量操作
+
+✅ **实时功能**
+- 数据库变化实时订阅
+- 多用户协作支持
+- 自动同步更新
+
+✅ **状态管理集成**
+- Pinia store 集成认证状态
+- 全局状态管理
+- 自动初始化和错误处理
+
+#### 使用示例
+
+**1. 认证功能**
+```typescript
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
+
+// 用户注册
+await authStore.signUp('user@example.com', 'password', { username: 'testuser' })
+
+// 用户登录
+await authStore.signIn('user@example.com', 'password')
+
+// 检查登录状态
+if (authStore.isAuthenticated) {
+  console.log('用户已登录:', authStore.user.email)
+}
+```
+
+**2. 数据操作**
+```typescript
+import SupabaseService from '@/services/supabase'
+
+// 创建徒步路线
+const result = await SupabaseService.createTrail({
+  name: '富士山登山路线',
+  difficulty: 'hard',
+  distance: 14.5,
+  elevation_gain: 1400,
+  duration: 480,
+  user_id: authStore.userId
+})
+
+// 获取所有路线
+const trails = await SupabaseService.getTrails()
+```
+
+**3. 文件上传**
+```typescript
+// 上传徒步路线图片
+const file = document.querySelector('input[type="file"]').files[0]
+const result = await SupabaseService.uploadFile('trail-images', `trail-${Date.now()}.jpg`, file)
+
+// 获取公共访问URL
+const publicUrl = SupabaseService.getPublicUrl('trail-images', result.data.path)
+```
+
+#### 测试组件
+
+项目包含一个完整的 Supabase 功能演示组件 `SupabaseExample.vue`，展示：
+- 用户认证流程
+- 数据库操作
+- 错误处理
+- 状态管理
+
+您可以在任何页面中导入使用：
+```vue
+<template>
+  <SupabaseExample />
+</template>
+
+<script setup>
+import SupabaseExample from '@/components/SupabaseExample.vue'
+</script>
 ```
 
 ### 高德地图功能
