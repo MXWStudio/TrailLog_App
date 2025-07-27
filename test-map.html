@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>高德地图测试</title>
+    <style>
+        #container {
+            width: 100%;
+            height: 400px;
+            background-color: #f0f0f0;
+        }
+        .info {
+            padding: 20px;
+            background: #f8f9fa;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="info">
+        <h3>高德地图配置测试</h3>
+        <p>API Key: 0ac71e274389a89aaf832624ed8eaead</p>
+        <p id="status">正在初始化...</p>
+    </div>
+    
+    <div id="container"></div>
+    
+    <script>
+        const API_KEY = '0ac71e274389a89aaf832624ed8eaead';
+        const statusEl = document.getElementById('status');
+        
+        function updateStatus(message, isError = false) {
+            statusEl.textContent = message;
+            statusEl.className = isError ? 'error' : 'success';
+            console.log(message);
+        }
+        
+        // 动态加载高德地图JS API
+        function loadAMapScript() {
+            return new Promise((resolve, reject) => {
+                if (window.AMap) {
+                    resolve(window.AMap);
+                    return;
+                }
+                
+                const script = document.createElement('script');
+                script.src = `https://webapi.amap.com/maps?v=2.0&key=${API_KEY}`;
+                script.onload = () => {
+                    if (window.AMap) {
+                        updateStatus('✅ 高德地图JS API加载成功');
+                        resolve(window.AMap);
+                    } else {
+                        reject(new Error('AMap对象不存在'));
+                    }
+                };
+                script.onerror = (error) => {
+                    reject(new Error('脚本加载失败'));
+                };
+                document.head.appendChild(script);
+            });
+        }
+        
+        // 初始化地图
+        async function initMap() {
+            try {
+                updateStatus('正在加载高德地图JS API...');
+                
+                const AMap = await loadAMapScript();
+                
+                updateStatus('正在创建地图实例...');
+                
+                const map = new AMap.Map('container', {
+                    center: [116.397428, 39.90923], // 北京天安门
+                    zoom: 10,
+                    viewMode: '3D'
+                });
+                
+                // 监听地图加载完成事件
+                map.on('complete', () => {
+                    updateStatus('🎉 地图加载完成！配置正确！');
+                });
+                
+                // 监听地图加载错误事件
+                map.on('error', (error) => {
+                    updateStatus(`❌ 地图加载错误: ${error.message || error}`, true);
+                });
+                
+                // 添加一个标记点
+                const marker = new AMap.Marker({
+                    position: [116.397428, 39.90923],
+                    title: '北京天安门'
+                });
+                
+                map.add(marker);
+                
+            } catch (error) {
+                updateStatus(`❌ 初始化失败: ${error.message}`, true);
+                console.error('初始化失败:', error);
+            }
+        }
+        
+        // 页面加载完成后初始化地图
+        document.addEventListener('DOMContentLoaded', initMap);
+    </script>
+</body>
+</html> 

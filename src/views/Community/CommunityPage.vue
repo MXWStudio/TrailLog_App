@@ -1,25 +1,31 @@
 <template>
-  <div class="explore-page">
+  <div class="community-page">
     <header class="explore-header">
       <div class="nav-container">
         <nav>
           <button @click="activeTab = 'local'" :class="{ active: activeTab === 'local' }">本地</button>
           <button @click="activeTab = 'following'" :class="{ active: activeTab === 'following' }">关注</button>
         </nav>
-        <div class="search-container">
-          <div class="search-bar" :class="{ 'search-expanded': isSearchExpanded }">
-            <input 
-              type="text" 
-              placeholder="按目的地探索" 
-              v-model="searchQuery"
-              v-show="isSearchExpanded"
-              ref="searchInput"
-              @blur="handleSearchBlur"
-            >
-            <IconMaterialSymbolsSearchRounded 
-              class="icon-search" 
-              @click="toggleSearch"
-            />
+        <div class="header-actions">
+          <button class="publish-btn" @click="goToPublish">
+            <i class="fas fa-plus"></i>
+            发布
+          </button>
+          <div class="search-container">
+            <div class="search-bar" :class="{ 'search-expanded': isSearchExpanded }">
+              <input 
+                type="text" 
+                placeholder="按目的地探索" 
+                v-model="searchQuery"
+                v-show="isSearchExpanded"
+                ref="searchInput"
+                @blur="handleSearchBlur"
+              >
+              <IconMaterialSymbolsSearchRounded 
+                class="icon-search" 
+                @click="toggleSearch"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -35,13 +41,20 @@
         <p v-if="followingPosts.length === 0">关注的用户暂无新动态。</p>
       </div>
     </main>
+
+
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import PostCard from '@/components/PostCard.vue'; // 假设PostCard是单个帖子卡片组件
 import IconMaterialSymbolsSearchRounded from '~icons/material-symbols/search-rounded';
+import qingchengMountain from '@/assets/qingcheng_mountain.jpg';
+import cigarGirlMountain from '@/assets/Cigar Girl Mountain.jpg';
+
+const router = useRouter();
 
 const activeTab = ref('local');
 const searchQuery = ref('');
@@ -65,6 +78,11 @@ const handleSearchBlur = () => {
   }
 };
 
+// 跳转到发布页面
+const goToPublish = () => {
+  router.push('/publish');
+};
+
 // 模拟数据加载
 onMounted(() => {
   // 实际项目中会从API获取数据
@@ -78,7 +96,7 @@ onMounted(() => {
       date: 'Jun 1', 
       title: '青城山徒步', 
       location: 'Qingcheng Mountain Hike', 
-      imageUrl: '@/assets/qingcheng_mountain.jpg', 
+      imageUrl: qingchengMountain, 
       recap: true 
     },
     { 
@@ -88,9 +106,9 @@ onMounted(() => {
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Local_Hiker' 
       }, 
       date: 'May 28', 
-      title: '龙泉山观日出', 
-      location: 'Longquan Mountain', 
-      imageUrl: '@/assets/fushishan_jitian.jpg', 
+      title: '四姑娘山观日出', 
+      location: 'Four Sisters Mountain', 
+      imageUrl: cigarGirlMountain, 
       recap: false 
     },
   ];
@@ -104,7 +122,7 @@ onMounted(() => {
       date: 'Jun 10', 
       title: '贡嘎雪山穿越', 
       location: 'Mount Gongga', 
-      imageUrl: '@/assets/qingcheng_mountain.jpg', 
+      imageUrl: qingchengMountain, 
       recap: true 
     },
   ];
@@ -131,6 +149,36 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 0 4px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.publish-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #007AFF;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.publish-btn:hover {
+  background: #005BB5;
+  transform: translateY(-1px);
+}
+
+.publish-btn i {
+  font-size: 12px;
 }
 
 nav {
@@ -213,5 +261,8 @@ nav button.active {
 .explore-content {
   padding: 15px;
   background-color: #f8f8f8;
+  padding-bottom: 100px; /* 为底部导航栏留出空间 */
 }
+
+
 </style>

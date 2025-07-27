@@ -12,10 +12,11 @@
   },
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
-    "@capacitor/core": "^7.4.0",
-    "@capacitor/geolocation": "^7.1.2",
-    "@capacitor/ios": "^7.4.0",
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/geolocation": "^6.0.1",
+    "@capacitor/ios": "^6.1.2",
     "@fortawesome/fontawesome-free": "^6.7.2",
+    "@supabase/supabase-js": "^2.52.1",
     "@types/mapbox-gl": "^3.4.1",
     "@vueuse/core": "^13.3.0",
     "lucide-vue-next": "^0.515.0",
@@ -25,8 +26,10 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
-    "@capacitor/cli": "^7.4.0",
+    "@capacitor/cli": "^6.1.2",
     "@iconify-json/material-symbols": "^1.2.27",
+    "@stagewise-plugins/vue": "^0.4.7",
+    "@stagewise/toolbar-vue": "^0.4.9",
     "@vitejs/plugin-vue": "^5.0.3",
     "@vue/tsconfig": "^0.5.1",
     "autoprefixer": "^10.4.21",

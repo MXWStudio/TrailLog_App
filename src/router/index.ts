@@ -31,6 +31,16 @@ const router = createRouter({
       path: '/community',
       name: 'community',
       component: () => import('../views/Community/CommunityPage.vue')
+    },
+    {
+      path: '/trail/:id',
+      name: 'trail-detail',
+      component: () => import('../views/Explore/TrailDetailPage.vue')
+    },
+    {
+      path: '/publish',
+      name: 'publish',
+      component: () => import('../views/Community/PublishPage.vue')
     }
   ]
 })

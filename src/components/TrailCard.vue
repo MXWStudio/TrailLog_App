@@ -1,5 +1,5 @@
 <template>
-  <div class="trail-card">
+  <div class="trail-card" @click="navigateToDetail">
     <!-- 图片部分 -->
     <div class="card-image-container">
       <img 
@@ -57,6 +57,7 @@
 
 <script setup lang="ts">
 import { defineProps, computed, ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import type { Trail } from '../data/trails';
 import { Bookmark, DownloadCloud, Star } from 'lucide-vue-next';
 import { Geolocation } from '@capacitor/geolocation';
@@ -70,6 +71,7 @@ const props = defineProps<{
   trail: Trail;
 }>();
 
+const router = useRouter();
 const mapContainer = ref<HTMLElement | null>(null);
 const trailImage = ref<HTMLImageElement | null>(null);
 const imageAspectRatio = ref(16/9); // 默认宽高比
@@ -135,7 +137,7 @@ const effectiveTrailImageUrl = computed(() => {
   
   // 根据路线名称和位置生成相关的图片
   const searchQuery = encodeURIComponent(`${props.trail.name},${props.trail.location},hiking,trail`);
-  return `${placeholderBaseUrl}375x200?${searchQuery}`;
+  return `${placeholderBaseUrl}500x375?${searchQuery}`;
 });
 
 // 计算属性，用于地图预览图片
@@ -168,7 +170,7 @@ const onImageError = (event: Event) => {
     target.src = qingchengMountain;
   } else {
     // 使用更通用的风景图作为备用
-    target.src = `${placeholderBaseUrl}375x200?nature,landscape`;
+    target.src = `${placeholderBaseUrl}500x375?nature,landscape`;
   }
 };
 
@@ -180,24 +182,37 @@ const onImageLoad = (event: Event) => {
     imageLoaded.value = true;
   }
 };
+
+// 导航到详细页面
+const navigateToDetail = () => {
+  router.push(`/trail/${props.trail.id}`);
+};
 </script>
 
 <style scoped>
 .trail-card {
-  background: white;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  /* 移除背景色、边框和阴影，让卡片透明 */
+  background: transparent;
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
   width: 100%;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.trail-card:hover {
+  transform: translateY(-2px);
 }
 
 .card-image-container {
   position: relative;
   width: 100%;
   height: 0;
-  padding-bottom: 56.25%; /* 16:9 比例 */
+  padding-bottom: 75%; /* 4:3 比例，让图片更高更大 */
   overflow: hidden;
+  border-radius: 20px; /* 只给图片添加圆角 */
 }
 
 .card-image {
@@ -207,6 +222,7 @@ const onImageLoad = (event: Event) => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 20px; /* 图片圆角 */
 }
 
 .bookmark-btn {
@@ -232,8 +248,9 @@ const onImageLoad = (event: Event) => {
   height: 80px;
   border-radius: 12px;
   overflow: hidden;
-  border: 2px solid white;
+  border: 3px solid white; /* 增加白边厚度 */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  background: white; /* 确保白边显示 */
 }
 
 .map-image {
@@ -263,7 +280,9 @@ const onImageLoad = (event: Event) => {
 }
 
 .card-content {
-  padding: 20px;
+  /* 移除背景和内边距，让文字直接显示 */
+  padding: 16px 0 0 0;
+  background: transparent;
 }
 
 .title-section {
@@ -278,6 +297,7 @@ const onImageLoad = (event: Event) => {
   font-weight: 600;
   color: #333;
   margin: 0;
+  text-align: left; /* 确保左对齐 */
 }
 
 .download-btn {
@@ -292,12 +312,14 @@ const onImageLoad = (event: Event) => {
   color: #666;
   font-size: 16px;
   margin: 0 0 16px 0;
+  text-align: left; /* 确保左对齐 */
 }
 
 .trail-stats {
   display: flex;
   gap: 16px;
   align-items: center;
+  justify-content: flex-start; /* 确保左对齐 */
 }
 
 .stat-item {
