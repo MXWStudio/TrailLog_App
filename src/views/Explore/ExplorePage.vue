@@ -7,11 +7,6 @@
         placeholder="搜索步道/关键词..."
         class="search-input"
       />
-      <div class="filter-icon">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4 6H20M7 12H17M10 18H14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </div>
     </div>
     <div class="filters">
       <button class="active">
@@ -67,11 +62,15 @@ const filteredTrails = computed(() => {
 .search-container {
   position: relative;
   margin-bottom: 1.2rem;
+  /* 进一步减少顶部间距，让搜索框更贴近灵动岛 */
+  margin-top: 0.25rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 
 .search-input {
   width: 100%;
-  padding: 12px 50px 12px 20px;
+  padding: 12px 20px;
   border: none;
   background: #f5f5f5;
   border-radius: 20px;
@@ -86,23 +85,24 @@ const filteredTrails = computed(() => {
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.filter-icon {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #666;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.filter-icon:hover {
-  color: #333;
-}
-
 .explore-page {
-  padding: 1rem 1.5rem;
-  padding-bottom: 5rem;
+  /* 重置顶部padding，让搜索框更贴近灵动岛 */
+  padding-top: 0;
+  padding-left: 0;
+  padding-right: 0;
+  /* 底部padding保持App.vue中的设置 */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  /* 确保滚动条不显示 */
+  overflow-x: hidden;
+}
+
+/* 确保所有链接没有下划线 */
+.explore-page a {
+  text-decoration: none;
+}
+
+.explore-page a:hover {
+  text-decoration: none;
 }
 
 .filters {
@@ -110,7 +110,7 @@ const filteredTrails = computed(() => {
   gap: 0.75rem;
   margin-bottom: 1.5rem;
   overflow-x: auto;
-  padding: 4px;
+  padding: 4px 1.5rem;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none; /* Firefox */
 }
@@ -152,5 +152,31 @@ const filteredTrails = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  /* 确保滚动条不显示 */
+  overflow-x: hidden;
+}
+</style>
+
+<style>
+/* 全局样式：隐藏所有滚动条 */
+html, body {
+  overflow-x: hidden !important;
+}
+
+/* 确保iOS Safari中也不显示滚动条 */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 隐藏所有元素的横向滚动条 */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: none;
 }
 </style> 

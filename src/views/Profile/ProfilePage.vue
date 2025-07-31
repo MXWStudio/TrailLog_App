@@ -207,6 +207,7 @@ onMounted(() => {
   background-color: #f8f8f8;
   min-height: 100vh;
   padding-top: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 .profile-header {

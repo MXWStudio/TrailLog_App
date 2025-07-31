@@ -220,6 +220,50 @@ npm run build
 
 # iOS平台运行
 npm run ios
+
+## iOS 项目同步
+
+### 快速同步
+```bash
+# 构建项目
+npm run build
+
+# 同步到 iOS
+npx cap sync ios
+
+# 打开 iOS 项目
+npx cap open ios
+```
+
+### iOS 项目配置
+
+iOS 项目已配置以下功能：
+
+✅ **完整权限配置**
+- 位置服务（徒步导航和路线记录）
+- 相机（拍摄徒步照片）
+- 相册（选择和保存照片）
+- 麦克风（录制视频）
+
+✅ **网络安全配置**
+- 支持高德地图 API 访问
+- 配置 App Transport Security
+- 允许必要的 HTTP 连接
+
+✅ **状态栏和启动屏幕**
+- 浅色主题状态栏
+- 白色背景启动屏幕
+- 适配 iOS 安全区域
+
+✅ **Capacitor 插件**
+- @capacitor/status-bar: 状态栏管理
+- @capacitor/geolocation: 位置服务
+- @capacitor/camera: 相机功能
+- @capacitor/splash-screen: 启动屏幕
+
+### 详细配置说明
+
+请查看 `ios/README.md` 文件获取完整的 iOS 项目配置和运行说明。
 ```
 
 ### Supabase 功能特性 🆕
@@ -438,6 +482,72 @@ NavigatePage页面已集成完整的高德地图功能：
 - ✅ 错误处理和重试机制
 - ✅ **定位质量评估**（新增）
 - ✅ **智能反馈系统**（新增）
+
+### iOS平台UI适配优化 🎯 (2024-12-31 最新)
+
+#### 🛠 iOS安全区域适配
+- **问题描述**：iOS设备上界面内容被状态栏、刘海屏/动态岛和Home Indicator遮挡
+- **解决方案**：实现完整的iOS安全区域(Safe Area)适配系统
+  
+#### ✨ 主要修复内容
+
+**1. 状态栏适配**
+- ✅ 添加`@capacitor/status-bar`插件配置
+- ✅ 更新Capacitor配置支持iOS状态栏样式
+- ✅ 修改HTML viewport支持`viewport-fit=cover`
+- ✅ 确保顶部内容不被状态栏遮挡
+
+**2. 安全区域CSS系统**
+- ✅ 添加CSS变量支持`env(safe-area-inset-*)`
+- ✅ 兼容不支持安全区域的设备(降级处理)
+- ✅ 实现响应式设计，移动设备全屏显示
+
+**3. 全局布局优化**
+- ✅ 更新`App.vue`布局系统，支持安全区域
+- ✅ 优化底部导航栏位置，避免Home Indicator遮挡
+- ✅ 确保所有页面内容在安全区域内显示
+
+**4. 各页面适配**
+- ✅ **探索页面**：搜索栏和内容区域适配
+- ✅ **社区页面**：顶部导航和内容滚动区域适配
+- ✅ **导航页面**：地图控件、搜索框、定位按钮位置适配
+- ✅ **路线详情卡片**：底部弹出卡片适配安全区域
+
+**5. iOS原生配置**
+- ✅ 更新`Info.plist`状态栏配置
+- ✅ 添加位置服务权限描述
+- ✅ 优化状态栏样式设置
+
+#### 📱 适配效果
+- **iPhone 14 Pro/15 Pro**：完美适配动态岛区域
+- **iPhone X及以上**：正确处理刘海屏安全区域
+- **iPad设备**：保持原有布局，不影响使用体验
+- **所有iOS设备**：底部Home Indicator不再遮挡内容
+
+#### 🔧 技术实现
+```css
+/* CSS安全区域变量 */
+:root {
+  --safe-area-inset-top: env(safe-area-inset-top);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+  --safe-area-inset-left: env(safe-area-inset-left);
+  --safe-area-inset-right: env(safe-area-inset-right);
+}
+
+/* 示例应用 */
+.page-content {
+  padding-top: max(20px, var(--safe-area-inset-top));
+  padding-bottom: calc(100px + var(--safe-area-inset-bottom));
+}
+```
+
+#### 🚀 更新步骤
+如需重新构建iOS应用以应用这些修复：
+```bash
+npm run build
+npx cap sync ios
+npx cap open ios
+```
 
 ## 图片资源说明
 

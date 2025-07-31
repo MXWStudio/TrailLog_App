@@ -321,6 +321,16 @@ const startNavigation = () => {
   overflow-y: auto;
   background: #fff;
   position: relative;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+/* 确保所有链接没有下划线 */
+.trail-detail-page a {
+  text-decoration: none;
+}
+
+.trail-detail-page a:hover {
+  text-decoration: none;
 }
 
 /* 图片轮播区域 */

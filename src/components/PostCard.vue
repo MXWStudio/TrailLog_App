@@ -97,8 +97,10 @@ const showComments = () => {
 
 <style scoped>
 .post-card {
-  margin-bottom: 20px;
+  margin-bottom: 12px; /* 从20px减少到12px */
   overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
 .post-header {
@@ -106,6 +108,7 @@ const showComments = () => {
   align-items: center;
   padding: 12px 16px;
   background-color: white;
+  border-radius: 16px 16px 0 0;
 }
 
 .avatar {
@@ -125,13 +128,13 @@ const showComments = () => {
 
 .author-name {
   font-weight: 600;
-  font-size: 16px;
+  font-size: 15px;
   color: #1a1a1a;
   margin-bottom: 2px;
 }
 
 .post-date {
-  font-size: 14px;
+  font-size: 13px;
   color: #666;
 }
 
@@ -139,6 +142,7 @@ const showComments = () => {
   color: #1890ff;
   text-decoration: underline;
   cursor: pointer;
+  font-weight: 500;
 }
 
 .icon-more {
@@ -153,6 +157,7 @@ const showComments = () => {
   width: 100%;
   aspect-ratio: 4/3;
   overflow: hidden;
+  border-radius: 16px 16px 0 0;
 }
 
 .post-image {
@@ -172,8 +177,8 @@ const showComments = () => {
   border: none;
   border-radius: 20px;
   padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
   backdrop-filter: blur(10px);
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -190,7 +195,7 @@ const showComments = () => {
   right: 15px;
   width: 90px;
   height: 90px;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   border: 2px solid white;
@@ -204,11 +209,13 @@ const showComments = () => {
 
 .post-content {
   padding: 16px;
+  background-color: white;
+  border-radius: 0 0 16px 16px;
 }
 
 .post-title {
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
   color: #1a1a1a;
   margin: 0 0 8px 0;
   line-height: 1.3;
@@ -218,11 +225,12 @@ const showComments = () => {
   font-size: 16px;
   color: #666;
   margin: 0 0 20px 0;
+  line-height: 1.4;
 }
 
 .trail-name {
   color: #1a1a1a;
-  font-weight: 500;
+  font-weight: 600;
   text-decoration: underline;
   cursor: pointer;
 }
@@ -239,14 +247,16 @@ const showComments = () => {
 }
 
 .stat-label {
-  font-size: 14px;
-  color: #666;
+  font-size: 12px;
+  color: #999;
   margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .stat-value {
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   color: #1a1a1a;
 }
 
@@ -284,10 +294,11 @@ const showComments = () => {
   background: none;
   border: none;
   padding: 8px 0;
-  font-size: 14px;
+  font-size: 13px;
   color: #666;
   cursor: pointer;
   transition: color 0.2s;
+  font-weight: 500;
 }
 
 .action-btn:hover {
@@ -295,7 +306,7 @@ const showComments = () => {
 }
 
 .action-icon {
-  font-size: 18px;
+  font-size: 16px;
   display: inline-block;
 }
 </style> 

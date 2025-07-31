@@ -41,8 +41,6 @@
         <p v-if="followingPosts.length === 0">关注的用户暂无新动态。</p>
       </div>
     </main>
-
-
   </div>
 </template>
 
@@ -130,18 +128,43 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.explore-page {
-  /* 样式与设计图保持一致 */
-  background-color: #f8f8f8;
+.community-page {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /* 完全重置顶部间距，让内容更贴近灵动岛 */
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+  /* 确保没有其他样式影响 */
+  top: 0;
+}
+
+/* 确保所有链接和按钮文字没有下划线 */
+.community-page a,
+.community-page button,
+.community-page input,
+.community-page textarea,
+.community-page * {
+  text-decoration: none;
+}
+
+.community-page a:hover,
+.community-page button:hover {
+  text-decoration: none;
 }
 
 .explore-header {
   background-color: #fff;
-  padding: 15px;
-  border-bottom: 1px solid #eee;
+  padding: 8px 15px;
   position: sticky;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 10;
+  /* 完全最小化顶部间距，让导航栏更贴近灵动岛 */
+  padding-top: env(safe-area-inset-top, 0px);
+  /* 去除边界线 */
 }
 
 .nav-container {
@@ -259,10 +282,50 @@ nav button.active {
 }
 
 .explore-content {
-  padding: 15px;
-  background-color: #f8f8f8;
-  padding-bottom: 100px; /* 为底部导航栏留出空间 */
+  flex: 1;
+  padding: 8px 15px;
+  background-color: #fff;
+  overflow-y: auto;
+  /* 进一步减少顶部间距，让内容更贴近导航栏 */
+  padding-top: 4px;
 }
 
+.local-feed,
+.following-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
+/* 确保内容区域可以正常滚动 */
+.explore-content::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+.explore-content {
+  -webkit-overflow-scrolling: touch;
+}
+</style>
+
+<style>
+/* 全局样式：隐藏所有滚动条 */
+html, body {
+  overflow-x: hidden !important;
+}
+
+/* 确保iOS Safari中也不显示滚动条 */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 隐藏所有元素的横向滚动条 */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: none;
+}
 </style>

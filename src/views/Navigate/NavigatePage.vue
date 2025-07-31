@@ -1222,6 +1222,7 @@ onUnmounted(() => {
   width: 100%;
   overflow: hidden;
   background-color: #f8f8f8;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 .map-view {
@@ -1233,6 +1234,11 @@ onUnmounted(() => {
   width: 100%;
   height: 100vh;
   z-index: 1;
+  /* 确保地图延伸到安全区域 */
+  padding-top: var(--safe-area-inset-top, 0);
+  padding-left: var(--safe-area-inset-left, 0);
+  padding-right: var(--safe-area-inset-right, 0);
+  padding-bottom: var(--safe-area-inset-bottom, 0);
 }
 
 #map-container {
@@ -1249,8 +1255,8 @@ onUnmounted(() => {
 /* 地图控件样式 */
 .map-controls {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: max(15px, var(--safe-area-inset-top, 0));
+  right: max(15px, var(--safe-area-inset-right, 0));
   background-color: rgba(255,255,255,0.95);
   border-radius: 20px;
   padding: 5px;
@@ -1280,8 +1286,8 @@ onUnmounted(() => {
 /* 定位按钮 */
 .location-btn {
   position: absolute;
-  top: 80px;
-  left: 15px;
+  top: max(80px, calc(var(--safe-area-inset-top, 0) + 80px));
+  left: max(15px, var(--safe-area-inset-left, 0));
   background-color: rgba(255,255,255,0.95);
   border-radius: 50%;
   width: 50px;
@@ -1330,9 +1336,9 @@ onUnmounted(() => {
 /* 搜索框 */
 .search-container {
   position: absolute;
-  top: 15px;
-  left: 15px;
-  right: 100px;
+  top: max(15px, var(--safe-area-inset-top, 0));
+  left: max(15px, var(--safe-area-inset-left, 0));
+  right: max(100px, calc(100px + var(--safe-area-inset-right, 0)));
   z-index: 1000;
 }
 
@@ -1468,14 +1474,16 @@ onUnmounted(() => {
   border-top-right-radius: 20px;
   box-shadow: 0 -2px 20px rgba(0,0,0,0.15);
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: var(--safe-area-inset-bottom, 0);
+  left: var(--safe-area-inset-left, 0);
+  right: var(--safe-area-inset-right, 0);
   z-index: 100;
   transform: translateY(calc(100% - 80px));
   transition: transform 0.3s ease-out;
   max-height: 70vh;
   overflow: hidden;
+  /* 为底部安全区域添加内边距 */
+  padding-bottom: max(20px, var(--safe-area-inset-bottom, 0));
 }
 
 .route-details-card.expanded {
@@ -1960,7 +1968,8 @@ onUnmounted(() => {
 }
 
 .tip-content a:hover {
-  text-decoration: underline;
+  text-decoration: none;
+  color: #005BB5;
 }
 
 .close-tip-btn {

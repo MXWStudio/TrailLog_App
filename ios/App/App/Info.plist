@@ -45,5 +45,43 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleDefault</string>
+	<key>UIStatusBarHidden</key>
+	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>需要访问您的位置来记录徒步路线和导航</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>需要在后台访问您的位置来持续记录徒步路线</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>需要访问您的位置来提供精确的徒步导航和路线记录</string>
+	<key>NSCameraUsageDescription</key>
+	<string>需要访问相机来拍摄徒步照片和记录路线</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>需要访问相册来选择和保存徒步照片</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>需要访问麦克风来录制徒步视频</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>amap.com</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSExceptionMinimumTLSVersion</key>
+				<string>TLSv1.0</string>
+			</dict>
+			<key>restapi.amap.com</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSExceptionMinimumTLSVersion</key>
+				<string>TLSv1.0</string>
+			</dict>
+		</dict>
+	</dict>
 </dict>
 </plist>
