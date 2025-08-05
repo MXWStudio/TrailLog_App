@@ -25,6 +25,7 @@
     "@supabase/supabase-js": "^2.52.1",
     "@types/mapbox-gl": "^3.4.1",
     "@vueuse/core": "^13.3.0",
+    "dotenv": "^17.2.1",
     "lucide-vue-next": "^0.515.0",
     "mapbox-gl": "^3.13.0",
     "pinia": "^2.3.1",

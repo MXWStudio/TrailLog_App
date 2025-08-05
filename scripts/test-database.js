@@ -1,7 +1,11 @@
 // TrailLog数据库连接测试脚本
 // 使用前请确保已经在Supabase中执行了database_schema.sql和database_security.sql
 
-const { createClient } = require('@supabase/supabase-js');
+import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+
+// 加载环境变量
+dotenv.config({ path: '.env.local' });
 
 // 配置信息
 const supabaseUrl = 'https://gaxjvkvudzrwyochicps.supabase.co';
@@ -124,8 +128,4 @@ async function testDatabaseConnection() {
 }
 
 // 如果直接运行此脚本
-if (require.main === module) {
-  testDatabaseConnection();
-}
-
-module.exports = { testDatabaseConnection }; 
+testDatabaseConnection(); 

@@ -119,7 +119,7 @@ body {
   align-items: center;
   background-color: #fff;
   border-top: 1px solid #eee;
-  padding: 12px max(8px, var(--safe-area-inset-left, 8px));
+  padding: 12px 16px;
   padding-bottom: max(12px, var(--safe-area-inset-bottom));
   position: fixed;
   bottom: 0;
@@ -152,11 +152,11 @@ body {
   color: #888;
   font-size: 11px;
   transition: all 0.3s ease;
-  padding: 6px 4px;
+  padding: 6px 8px;
   border-radius: 12px;
   flex: 1;
-  max-width: 70px;
-  min-width: 50px;
+  max-width: 60px;
+  min-width: 40px;
 }
 
 .bottom-nav .nav-item:hover {
