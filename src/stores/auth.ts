@@ -53,18 +53,24 @@ export const useAuthStore = defineStore('auth', () => {
    */
   async function signUp(email: string, password: string, userData?: { username?: string }) {
     loading.value = true
+    console.log('[AuthStore] signUp action called. Preparing to call SupabaseService.');
     
     try {
       const result = await SupabaseService.signUp(email, password, userData)
       
       if (result.success) {
-        console.log('注册成功，请查看邮箱验证链接')
-        return { success: true, message: '注册成功，请查看邮箱验证链接' }
+        console.log('[AuthStore] SupabaseService.signUp succeeded.', result.message);
+        return { success: true, message: result.message || '注册成功，请查看邮箱验证链接' }
       } else {
+        console.error('[AuthStore] SupabaseService.signUp failed:', result.error);
         return { success: false, error: result.error }
       }
+    } catch (error) {
+      console.error('[AuthStore] An unexpected error occurred during signUp:', error);
+      return { success: false, error: '发生未知错误' };
     } finally {
       loading.value = false
+      console.log('[AuthStore] signUp action finished.');
     }
   }
 
@@ -84,6 +90,34 @@ export const useAuthStore = defineStore('auth', () => {
       } else {
         return { success: false, error: result.error }
       }
+    } finally {
+      loading.value = false
+    }
+  }
+
+  /**
+   * Google第三方登录
+   */
+  async function signInWithGoogle() {
+    loading.value = true
+    
+    try {
+      const result = await SupabaseService.signInWithGoogle()
+      return result
+    } finally {
+      loading.value = false
+    }
+  }
+
+  /**
+   * Apple第三方登录
+   */
+  async function signInWithApple() {
+    loading.value = true
+    
+    try {
+      const result = await SupabaseService.signInWithApple()
+      return result
     } finally {
       loading.value = false
     }
@@ -156,6 +190,8 @@ export const useAuthStore = defineStore('auth', () => {
     initialize,
     signUp,
     signIn,
+    signInWithGoogle,
+    signInWithApple,
     signOut,
     getUserProfile,
     updateUserProfile

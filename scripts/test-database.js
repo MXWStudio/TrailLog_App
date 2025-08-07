@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
 
 // 配置信息
-const supabaseUrl = 'https://gaxjvkvudzrwyochicps.supabase.co';
+const supabaseUrl = 'https://hklkdmochyykuyrwjbhy.supabase.co';
 const supabaseKey = process.env.VITE_SUPABASE_KEY || 'your_supabase_anon_key_here';
 
 // 创建客户端

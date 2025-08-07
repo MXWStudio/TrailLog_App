@@ -41,6 +41,21 @@ const router = createRouter({
       path: '/publish',
       name: 'publish',
       component: () => import('../views/Community/PublishPage.vue')
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import('../views/Auth/LoginPage.vue')
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/Auth/RegisterPage.vue')
+    },
+    {
+      path: '/auth/callback',
+      name: 'auth-callback',
+      component: () => import('../views/Auth/AuthCallback.vue')
     }
   ]
 })

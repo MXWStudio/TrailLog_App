@@ -8,7 +8,7 @@
 2. 选择您的项目或创建新项目
 3. 进入 `Settings` → `API`
 4. 复制以下信息：
-   - `Project URL`：已配置为 https://gaxjvkvudzrwyochicps.supabase.co
+   - `Project URL`：已配置为 https://hklkdmochyykuyrwjbhy.supabase.co
    - `anon public key`：需要配置到环境变量中
 
 ### 2. 配置环境变量

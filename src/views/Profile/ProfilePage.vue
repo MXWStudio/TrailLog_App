@@ -1,126 +1,141 @@
 <template>
   <div class="profile-page">
-    <header class="profile-header">
-      <div class="settings-icons">
-        <i class="icon-more">...</i>
-      </div>
-      <div class="profile-info">
-        <div class="avatar-container" @click="showAvatarModal = true">
-          <img :src="user.avatar" alt="User Avatar" class="avatar">
-          <div class="avatar-edit-overlay">
-            <span>编辑</span>
-          </div>
-        </div>
-        <h2>{{ user.name }}</h2>
-        <p class="user-location">{{ user.location }}</p>
-        <div class="follow-stats">
-          <div class="stat-item">
-            <span class="value">{{ user.followers }}</span>
-            <span class="label">关注者</span>
-          </div>
-          <div class="stat-item">
-            <span class="value">{{ user.following }}</span>
-            <span class="label">关注中</span>
-          </div>
-        </div>
-      </div>
-    </header>
+    <!-- 未登录状态 -->
+    <div v-if="!authStore.isAuthenticated" class="not-logged-in">
+      <h2>您还未登录</h2>
+      <p>登录后可以查看个人主页、保存路线和更多功能。</p>
+      <button @click="goToLogin" class="login-button">去登录</button>
+    </div>
 
-    <!-- 头像编辑模态框 -->
-    <div v-if="showAvatarModal" class="avatar-modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>更换头像</h3>
-          <button class="close-btn" @click="showAvatarModal = false">×</button>
+    <!-- 已登录状态 -->
+    <div v-else>
+      <header class="profile-header">
+        <div class="settings-icons">
+          <i class="icon-more" @click="handleLogout">退出</i>
         </div>
-        <div class="modal-body">
-          <div class="avatar-options">
-            <div class="option">
-              <h4>上传照片</h4>
-              <input 
-                type="file" 
-                accept="image/*" 
-                @change="handleImageUpload" 
-                ref="fileInput"
-                style="display: none"
-              >
-              <button class="upload-btn" @click="$refs.fileInput.click()">
-                选择图片
-              </button>
+        <div class="profile-info">
+          <div class="avatar-container" @click="showAvatarModal = true">
+            <img :src="user.avatar" alt="User Avatar" class="avatar">
+            <div class="avatar-edit-overlay">
+              <span>编辑</span>
             </div>
-            <div class="option">
-              <h4>生成虚拟头像</h4>
-              <div class="avatar-customization">
-                <button class="refresh-btn" @click="regenerateAvatar">
-                  重新生成
+          </div>
+          <h2>{{ authStore.user?.email }}</h2>
+          <p class="user-location">{{ user.location }}</p>
+          <div class="follow-stats">
+            <div class="stat-item">
+              <span class="value">{{ user.followers }}</span>
+              <span class="label">关注者</span>
+            </div>
+            <div class="stat-item">
+              <span class="value">{{ user.following }}</span>
+              <span class="label">关注中</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- 头像编辑模态框 -->
+      <div v-if="showAvatarModal" class="avatar-modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3>更换头像</h3>
+            <button class="close-btn" @click="showAvatarModal = false">×</button>
+          </div>
+          <div class="modal-body">
+            <div class="avatar-options">
+              <div class="option">
+                <h4>上传照片</h4>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  @change="handleImageUpload" 
+                  ref="fileInput"
+                  style="display: none"
+                >
+                <button class="upload-btn" @click="$refs.fileInput.click()">
+                  选择图片
                 </button>
-                <div class="avatar-preview">
-                  <img :src="previewAvatarUrl" alt="Preview Avatar">
+              </div>
+              <div class="option">
+                <h4>生成虚拟头像</h4>
+                <div class="avatar-customization">
+                  <button class="refresh-btn" @click="regenerateAvatar">
+                    重新生成
+                  </button>
+                  <div class="avatar-preview">
+                    <img :src="previewAvatarUrl" alt="Preview Avatar">
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="modal-footer">
-          <button class="cancel-btn" @click="showAvatarModal = false">取消</button>
-          <button class="save-btn" @click="saveAvatar">保存</button>
+          <div class="modal-footer">
+            <button class="cancel-btn" @click="showAvatarModal = false">取消</button>
+            <button class="save-btn" @click="saveAvatar">保存</button>
+          </div>
         </div>
       </div>
+
+      <main class="profile-content">
+        <div class="stats-card">
+          <h3>2025 统计</h3>
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="value">{{ userStats.activities }}</span>
+              <span class="label">活动</span>
+            </div>
+            <div class="stat-item">
+              <span class="value">{{ userStats.kilometers }}</span>
+              <span class="label">公里</span>
+            </div>
+          </div>
+          <i class="icon-arrow-right"></i>
+        </div>
+
+        <nav class="profile-tabs">
+          <button @click="activeTab = 'feed'" :class="{ active: activeTab === 'feed' }">动态</button>
+          <button @click="activeTab = 'photos'" :class="{ active: activeTab === 'photos' }">照片</button>
+          <button @click="activeTab = 'reviews'" :class="{ active: activeTab === 'reviews' }">评论</button>
+          <button @click="activeTab = 'activities'" :class="{ active: activeTab === 'activities' }">活动</button>
+          <button @click="activeTab = 'comp'" :class="{ active: activeTab === 'comp' }">成就</button>
+        </nav>
+
+        <div class="tab-content">
+          <div v-if="activeTab === 'feed'">
+            <p>这里显示用户的动态，如发布的徒步记录。</p>
+          </div>
+          <div v-if="activeTab === 'photos'">
+            <p>这里显示用户上传的照片。</p>
+          </div>
+          <div v-if="activeTab === 'reviews'">
+            <p>这里显示用户发表的评论。</p>
+          </div>
+          <div v-if="activeTab === 'activities'">
+            <p>这里显示用户的历史活动。</p>
+          </div>
+          <div v-if="activeTab === 'comp'">
+            <p>这里显示用户的成就和勋章。</p>
+          </div>
+        </div>
+
+        <div class="premium-promo">
+          <i class="icon-sparkle">✨</i>
+          <span>免费试用 Peak 或 Plus</span>
+          <i class="icon-arrow-right"></i>
+        </div>
+      </main>
     </div>
-
-    <main class="profile-content">
-      <div class="stats-card">
-        <h3>2025 统计</h3>
-        <div class="stats-grid">
-          <div class="stat-item">
-            <span class="value">{{ userStats.activities }}</span>
-            <span class="label">活动</span>
-          </div>
-          <div class="stat-item">
-            <span class="value">{{ userStats.kilometers }}</span>
-            <span class="label">公里</span>
-          </div>
-        </div>
-        <i class="icon-arrow-right"></i>
-      </div>
-
-      <nav class="profile-tabs">
-        <button @click="activeTab = 'feed'" :class="{ active: activeTab === 'feed' }">动态</button>
-        <button @click="activeTab = 'photos'" :class="{ active: activeTab === 'photos' }">照片</button>
-        <button @click="activeTab = 'reviews'" :class="{ active: activeTab === 'reviews' }">评论</button>
-        <button @click="activeTab = 'activities'" :class="{ active: activeTab === 'activities' }">活动</button>
-        <button @click="activeTab = 'comp'" :class="{ active: activeTab === 'comp' }">成就</button>
-      </nav>
-
-      <div class="tab-content">
-        <div v-if="activeTab === 'feed'">
-          <p>这里显示用户的动态，如发布的徒步记录。</p>
-        </div>
-        <div v-if="activeTab === 'photos'">
-          <p>这里显示用户上传的照片。</p>
-        </div>
-        <div v-if="activeTab === 'reviews'">
-          <p>这里显示用户发表的评论。</p>
-        </div>
-        <div v-if="activeTab === 'activities'">
-          <p>这里显示用户的历史活动。</p>
-        </div>
-        <div v-if="activeTab === 'comp'">
-          <p>这里显示用户的成就和勋章。</p>
-        </div>
-      </div>
-
-      <div class="premium-promo">
-        <i class="icon-sparkle">✨</i>
-        <span>免费试用 Peak 或 Plus</span>
-        <i class="icon-arrow-right"></i>
-      </div>
-    </main>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
+
+const authStore = useAuthStore();
+const router = useRouter();
 
 const showAvatarModal = ref(false);
 const fileInput = ref(null);
@@ -135,6 +150,15 @@ const user = ref({
 });
 
 const previewAvatarUrl = ref(user.value.avatar);
+
+const goToLogin = () => {
+  router.push('/login');
+};
+
+const handleLogout = async () => {
+  await authStore.signOut();
+  router.push('/login');
+};
 
 // 重新生成虚拟头像
 const regenerateAvatar = () => {
@@ -198,7 +222,9 @@ const getCurrentLocation = () => {
 };
 
 onMounted(() => {
-  getCurrentLocation();
+  if (authStore.isAuthenticated) {
+    getCurrentLocation();
+  }
 });
 </script>
 
@@ -208,6 +234,37 @@ onMounted(() => {
   min-height: 100vh;
   padding-top: 20px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.not-logged-in {
+  text-align: center;
+  padding: 50px 20px;
+}
+
+.not-logged-in h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.not-logged-in p {
+  color: #666;
+  margin-bottom: 30px;
+}
+
+.login-button {
+  background-color: #007aff;
+  color: white;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.login-button:hover {
+  background-color: #0056b3;
 }
 
 .profile-header {
@@ -221,16 +278,14 @@ onMounted(() => {
   right: 20px;
   display: flex;
   gap: 15px;
-  font-size: 22px;
+  font-size: 16px;
   color: #555;
   cursor: pointer;
 }
-
 .profile-info {
   text-align: center;
   margin-top: 30px;
 }
-
 .profile-info .avatar {
   width: 80px;
   height: 80px;
@@ -239,12 +294,10 @@ onMounted(() => {
   margin-bottom: 10px;
   background-color: #d0d0d0; /* Placeholder for missing image */
 }
-
 .profile-info h2 {
   font-size: 24px;
   margin: 5px 0;
 }
-
 .profile-info .user-location {
   font-size: 14px;
   color: #666;
@@ -254,36 +307,29 @@ onMounted(() => {
   justify-content: center;
   gap: 5px;
 }
-
 .profile-info .user-location::before {
   content: "📍";
   font-size: 16px;
 }
-
 .follow-stats {
   display: flex;
   justify-content: center;
   gap: 30px;
 }
-
 .follow-stats .stat-item {
   text-align: center;
 }
-
 .follow-stats .stat-item .value {
   font-size: 20px;
   font-weight: bold;
 }
-
 .follow-stats .stat-item .label {
   font-size: 12px;
   color: #888;
 }
-
 .profile-content {
   padding: 20px;
 }
-
 .stats-card {
   background-color: #fff;
   border-radius: 20px;
@@ -294,13 +340,11 @@ onMounted(() => {
   justify-content: space-between;
   box-shadow: 0 1px 5px rgba(0,0,0,0.05);
 }
-
 .stats-card h3 {
   font-size: 18px;
   margin: 0;
   flex-shrink: 0;
 }
-
 .stats-card .stats-grid {
   display: flex;
   gap: 30px;
@@ -308,28 +352,23 @@ onMounted(() => {
   flex-grow: 1;
   justify-content: flex-end; /* Align stats to the right */
 }
-
 .stats-card .stat-item {
   text-align: center;
 }
-
 .stats-card .stat-item .value {
   font-size: 18px;
   font-weight: bold;
 }
-
 .stats-card .stat-item .label {
   font-size: 12px;
   color: #888;
 }
-
 .stats-card .icon-arrow-right {
   font-size: 20px;
   color: #888;
   cursor: pointer;
   margin-left: 15px;
 }
-
 .profile-tabs {
   display: flex;
   overflow-x: auto;
@@ -337,7 +376,6 @@ onMounted(() => {
   margin-bottom: 20px;
   padding: 10px 0;
 }
-
 .profile-tabs button {
   flex-shrink: 0;
   padding: 8px 16px;
@@ -351,14 +389,12 @@ onMounted(() => {
   margin-right: 10px;
   transition: all 0.3s ease;
 }
-
 .profile-tabs button.active {
   color: white;
   background-color: #000;
   font-weight: 500;
   border-bottom: none;
 }
-
 .tab-content {
   background-color: #fff;
   border-radius: 20px;
@@ -370,7 +406,6 @@ onMounted(() => {
   color: #666;
   box-shadow: 0 1px 5px rgba(0,0,0,0.05);
 }
-
 .premium-promo {
   background-color: #000;
   color: #fff;
@@ -383,25 +418,20 @@ onMounted(() => {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 .premium-promo:hover {
   background-color: #333;
 }
-
 .premium-promo .icon-sparkle {
   font-size: 22px;
   margin-right: 10px;
 }
-
 .premium-promo span {
   flex-grow: 1;
   font-weight: bold;
 }
-
 .premium-promo .icon-arrow-right {
   font-size: 20px;
 }
-
 .avatar-container {
   position: relative;
   width: 80px;
@@ -409,7 +439,6 @@ onMounted(() => {
   margin: 0 auto;
   cursor: pointer;
 }
-
 .avatar-edit-overlay {
   position: absolute;
   top: 0;
@@ -425,11 +454,9 @@ onMounted(() => {
   opacity: 0;
   transition: opacity 0.3s;
 }
-
 .avatar-container:hover .avatar-edit-overlay {
   opacity: 1;
 }
-
 .avatar-modal {
   position: fixed;
   top: 0;
@@ -442,7 +469,6 @@ onMounted(() => {
   justify-content: center;
   z-index: 1000;
 }
-
 .modal-content {
   background: white;
   border-radius: 20px;
@@ -450,41 +476,34 @@ onMounted(() => {
   max-width: 500px;
   padding: 20px;
 }
-
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
-
 .modal-header h3 {
   margin: 0;
 }
-
 .close-btn {
   background: none;
   border: none;
   font-size: 24px;
   cursor: pointer;
 }
-
 .avatar-options {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
-
 .option {
   padding: 15px;
   border: 1px solid #eee;
   border-radius: 8px;
 }
-
 .option h4 {
   margin: 0 0 10px 0;
 }
-
 .upload-btn, .refresh-btn {
   background: #f5f5f5;
   border: none;
@@ -496,12 +515,10 @@ onMounted(() => {
   color: #666;
   transition: all 0.3s ease;
 }
-
 .upload-btn:hover, .refresh-btn:hover {
   background: #000;
   color: white;
 }
-
 .avatar-preview {
   width: 100px;
   height: 100px;
@@ -509,20 +526,17 @@ onMounted(() => {
   overflow: hidden;
   margin: 10px auto;
 }
-
 .avatar-preview img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-
 .modal-footer {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
   margin-top: 20px;
 }
-
 .cancel-btn, .save-btn {
   padding: 8px 16px;
   border-radius: 20px;
@@ -531,24 +545,20 @@ onMounted(() => {
   font-weight: 500;
   transition: all 0.3s ease;
 }
-
 .cancel-btn {
   background: #f5f5f5;
   border: none;
   color: #666;
 }
-
 .cancel-btn:hover {
   background: #e0e0e0;
 }
-
 .save-btn {
   background: #000;
   color: white;
   border: none;
 }
-
 .save-btn:hover {
   background: #333;
 }
-</style> 
+</style>

@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 
 // Supabase配置
-const supabaseUrl = 'https://gaxjvkvudzrwyochicps.supabase.co'
+const supabaseUrl = 'https://hklkdmochyykuyrwjbhy.supabase.co'
 const supabaseKey = import.meta.env.VITE_SUPABASE_KEY
 
 // 检查环境变量是否配置

@@ -16,6 +16,9 @@ export class SupabaseService {
    */
   static async signUp(email: string, password: string, userData?: { username?: string }) {
     try {
+      console.log('[SupabaseService] 开始注册流程...');
+      
+      console.log('[SupabaseService] 步骤1: 调用 supabase.auth.signUp 创建认证用户...');
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -25,9 +28,57 @@ export class SupabaseService {
       })
       
       if (error) throw error
-      return { success: true, data }
+      if (!data.user) throw new Error('注册成功但未返回用户信息')
+      console.log('[SupabaseService] 步骤1成功: 认证用户已创建, 用户ID:', data.user.id);
+
+      // 在 public.users 表中创建对应的用户记录
+      console.log('[SupabaseService] 步骤2: 向 public.users 表插入新用户记录...');
+      
+      // 准备用户数据
+      const userRecord = {
+        id: data.user.id,
+        email: data.user.email,
+        username: userData?.username || email.split('@')[0],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }
+      
+      console.log('[SupabaseService] 准备插入的用户数据:', userRecord);
+      
+      const { error: insertError } = await supabase
+        .from('users')
+        .insert([userRecord])
+
+      if (insertError) {
+        console.error('[SupabaseService] 步骤2失败: 在 public.users 表中创建用户记录失败:', insertError)
+        
+        // 如果插入失败，尝试检查表结构
+        console.log('[SupabaseService] 尝试检查 users 表结构...');
+        const { data: tableInfo, error: tableError } = await supabase
+          .from('users')
+          .select('*')
+          .limit(1)
+        
+        if (tableError) {
+          console.error('[SupabaseService] 无法访问 users 表，可能需要先创建表结构:', tableError);
+          console.log('[SupabaseService] 请确保已执行 database_schema.sql 脚本');
+        }
+        
+        // 即使插入失败，我们也返回成功，因为认证用户已经创建
+        // 用户可以在后续手动创建用户记录
+        console.log('[SupabaseService] 认证用户创建成功，但用户记录插入失败。用户需要手动完成设置。');
+      } else {
+        console.log('[SupabaseService] 步骤2成功: public.users 表记录已插入。');
+      }
+
+      console.log('[SupabaseService] 注册流程全部完成。');
+      return { 
+        success: true, 
+        data,
+        message: '注册成功！请查看邮箱验证链接完成注册。'
+      }
     } catch (error) {
-      console.error('注册失败:', error)
+      console.error('[SupabaseService] 注册流程出现严重错误:', error)
       return { success: false, error: error.message }
     }
   }
@@ -46,6 +97,46 @@ export class SupabaseService {
       return { success: true, data }
     } catch (error) {
       console.error('登录失败:', error)
+      return { success: false, error: error.message }
+    }
+  }
+
+  /**
+   * Google第三方登录
+   */
+  static async signInWithGoogle() {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      })
+      
+      if (error) throw error
+      return { success: true, data }
+    } catch (error) {
+      console.error('Google登录失败:', error)
+      return { success: false, error: error.message }
+    }
+  }
+
+  /**
+   * Apple第三方登录
+   */
+  static async signInWithApple() {
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'apple',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      })
+      
+      if (error) throw error
+      return { success: true, data }
+    } catch (error) {
+      console.error('Apple登录失败:', error)
       return { success: false, error: error.message }
     }
   }

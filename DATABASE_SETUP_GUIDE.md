@@ -18,7 +18,7 @@
 ### 第一步：准备工作
 
 1. **确保Supabase项目已创建**
-   - 项目URL: `https://gaxjvkvudzrwyochicps.supabase.co`
+   - 项目URL: `https://hklkdmochyykuyrwjbhy.supabase.co`
    - 获取你的 `anon key` 并配置到 `.env.local`
 
 2. **检查环境变量**
